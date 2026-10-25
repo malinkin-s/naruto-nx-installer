@@ -36,7 +36,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ inputs.tag }}
-        run: gh release download $TAG --repo malinkin-s/naruto-rise-of-a-ninja-nx --pattern 'naruto.nro' --dir release --clobber
+        # the newest release, pre-releases included ("latest" leaves them out)
+        run: |
+          TAG=${TAG:-$(gh release list --repo malinkin-s/naruto-rise-of-a-ninja-nx --limit 1 --json tagName --jq '.[0].tagName')}
+          gh release download "$TAG" --repo malinkin-s/naruto-rise-of-a-ninja-nx --pattern 'naruto.nro' --dir release --clobber
 
       - name: Check it against the list of builds
         run: |
