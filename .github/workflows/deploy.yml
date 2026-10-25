@@ -1,7 +1,7 @@
 name: Deploy to GitHub Pages
 
-# The NRO is not in this repository: it is an asset (sa2.nro) of a release of the sa2-nx repository of the same
-# owner. Each deployment downloads it into release/, checks it against release/manifest.json and publishes the page
+# The NRO is not in this repository: it is the naruto.nro asset of a release of malinkin-s/naruto-rise-of-a-ninja-nx.
+# Each deployment downloads it into release/, checks its SHA-256 against release/manifest.json and publishes the page
 # with it. Run it by hand (Actions > Deploy to GitHub Pages > Run workflow) after publishing a new release there.
 
 on:
@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Release of sa2-nx to take the NRO from (empty for the latest)
+        description: Release of naruto-rise-of-a-ninja-nx to take the NRO from (empty for the latest)
         required: false
         default: ''
 
@@ -32,29 +32,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
       - name: Download the NRO of the release
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ inputs.tag }}
-          REPO: ${{ github.repository_owner }}/sa2-nx
-        run: gh release download $TAG --repo "$REPO" --pattern 'sa2.nro' --dir release --clobber
+        run: gh release download $TAG --repo malinkin-s/naruto-rise-of-a-ninja-nx --pattern 'naruto.nro' --dir release --clobber
 
       - name: Check it against the list of builds
-        run: node .github/verify_release.mjs
-
-      - name: Check the page's own code
         run: |
-          node test/texts_node.mjs
-          node test/fnv_node.mjs
+          want=$(node -e "console.log(require('./release/manifest.json').builds.map(b => b.nro_sha256).join(' '))")
+          have=$(sha256sum release/naruto.nro | cut -d' ' -f1)
+          echo "naruto.nro $have"; case " $want " in *" $have "*) ;; *) echo "not a build of the manifest"; exit 1;; esac
 
       - name: Assemble the site
         run: |
           mkdir _site
-          cp -r index.html app.js worker.js sw.js icons shader_common.h renut_shader_common.h lib wasm release _site/
+          cp -r index.html app.js naruto_worker.js icons renut_shader_common.h lib wasm release _site/
+          rm -rf _site/wasm/src
 
       - uses: actions/configure-pages@v5
 

@@ -1,11 +1,14 @@
-SA2-NX - licenses of the software in this package
-=================================================
+NARUTO-NX - licenses of the software in this package
+====================================================
 
-sa2.nro is free software under the GNU General Public License, version 3 (full text below).
-Source code: https://github.com/ChanseyIsTheBest/sa2-nx
+naruto.nro is free software under the GNU General Public License, version 3 (full text below).
+Source code: https://github.com/malinkin-s/naruto-rise-of-a-ninja-nx
+No game data is in it: the game's shaders and files come from your own copy of the game.
 
 It contains code from these projects and libraries, under their own licenses (full texts below):
 
+  naruto-nx, by malinkin-s ............................................ GPL-3.0
+  naruto-rise-recomp, by jorjbarbosa (the PC recompilation it is based on) GPL-3.0
   sa2-nx, by ChanseyIsTheBest .......................................... GPL-3.0
   masseffect-nx, by NebadasSwifty (the native renderer it grew from) ... GPL-3.0
   banjo-nx, by ChanseyIsTheBest (Renut's renderer as it carries it) .... GPL-3.0

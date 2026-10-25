@@ -24,3 +24,8 @@ The licenses of the software in the package (the NRO and its libraries) are in [
 and the source code with its license is at https://github.com/ChanseyIsTheBest/sa2-nx.
 
 The icon is the Sonic Adventure 2 artwork, © SEGA.
+
+## naruto-nx
+
+`wasm/uam_web.*`: uam (fincs, zlib License; the patches of SwitchWakerHD and banjo-nx, MPL-2.0; Mesa parts, MIT) as
+vendored in naruto-nx's `app/thirdparty/uam`, built for WebAssembly by naruto-nx's `tools/wasm/build_uam_web.sh`.
