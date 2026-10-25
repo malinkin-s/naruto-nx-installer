@@ -13,7 +13,9 @@ import { ZipWriter } from './lib/zip.js';
 
 const log = (key, args = {}) => postMessage({ type: 'log', key, args });
 const progress = (fraction) => postMessage({ type: 'progress', fraction });
-const quiet = { print: () => {}, printErr: () => {} };
+// A new options object for every module: Emscripten's factory fills the object it is given in (FS, callMain...), so
+// sharing one between modules mixes them up.
+const quiet = () => ({ print: () => {}, printErr: () => {} });
 
 async function sha256(bytes) {
   return [...new Uint8Array(await crypto.subtle.digest('SHA-256', bytes))].map((b) => b.toString(16).padStart(2, '0')).join('');
@@ -24,13 +26,13 @@ async function fetchBytes(url) {
   return new Uint8Array(await r.arrayBuffer());
 }
 
-onmessage = async ({ data }) => {
+globalThis.onmessage = async ({ data }) => {
   try {
     const { xex, sdb, build } = data;  // xex, sdb: Uint8Array; build: the manifest's entry
     progress(0.01);
     log('loading');
-    const [lzx, renutHlsl, dxc, spirvCross] = await Promise.all([createLzxModule(quiet), createRenutHlslModule(quiet),
-      createDxcModule(quiet), createSpirvCrossModule(quiet)]);
+    const [lzx, renutHlsl, dxc, spirvCross] = await Promise.all([createLzxModule(quiet()), createRenutHlslModule(quiet()),
+      createDxcModule(quiet()), createSpirvCrossModule(quiet())]);
     const { image } = await readXexImage(xex, lzxStep(lzx));
     const wanted = new Set(build.deko3d.containers_sha256);
     const containers = [];
@@ -49,7 +51,7 @@ onmessage = async ({ data }) => {
     if (pkgHash !== build.deko3d.package_sha256) throw new Error(`deko3d_glsl.bin: SHA-256 ${pkgHash}, not the tested package`);
     progress(0.6);
     log('compiling');
-    const uam = await createUamWebModule(quiet);
+    const uam = await createUamWebModule(quiet());
     const variants = await (await fetch(`./release/${build.variants}`)).json();
     const glsl = new Map(shaders.map((s) => [s.name, s.glsl]));
     const { cache, failed } = buildDkshCache(glsl, variants, uam, () => {}, (f) => progress(0.6 + 0.3 * f));

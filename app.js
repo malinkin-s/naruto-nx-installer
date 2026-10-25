@@ -94,7 +94,7 @@ $('create').onclick = () => {
   if (!chosen) return;
   $('create').disabled = true;
   $('log').textContent = '';
-  const worker = new Worker('./naruto_worker.js?v=3', { type: 'module' });
+  const worker = new Worker('./naruto_worker.js?v=4', { type: 'module' });
   worker.onmessage = ({ data }) => {
     if (data.type === 'log') log(data.key, data.args);
     else if (data.type === 'progress') $('bar').style.width = `${Math.round(data.fraction * 100)}%`;
