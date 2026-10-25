@@ -1,10 +1,10 @@
 {
  "builds": [
   {
-   "version": "0.1.0",
+   "version": "0.1.1",
    "nro": "naruto.nro",
-   "nro_sha256": "934d86ddf6128e7dc801cf3ab29b10fd970a95ef19c6a9851314a4e1444ddd57",
-   "nro_size": 38676677,
+   "nro_sha256": "fa5bdb655044b6108a594145df8e17ae9384cce42a55fb72a85578b52fc1cc33",
+   "nro_size": 38680773,
    "xex_sha256": "f8fd8a979fb5451460f820303a6ca4c75e01fd943aed600983cb68fc491af7bd",
    "deko3d": {
     "passes": "alpha,tess,bonerow,vszero,vsout,pszero,pred,predmul,sext,bool01,sel,alphamask,earlyhoist,ifmerge,dowhile,selsame,deadcomp,guardsel,lightbranch,nullps,txq,earlyz,gpr32,bonesel,aw4",
@@ -6659,7 +6659,7 @@
     "package_sha256": "f99566a9f722f3336c6045f12beeeb36ce60200b332e43daceb47dd35f396ecf"
    },
    "variants": "deko3d_variants.json",
-   "cache_sha256": "e5447c605610314bed6a1f388ac545db9bc2ddefe1dcffb7ff5890b6ff533b00"
+   "cache_sha256": "4ba1bc2fc74d6c79f1e7193522644f1af3b6827473a6c62b6fc59333c79ee3e0"
   }
  ]
 }
