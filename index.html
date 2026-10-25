@@ -26,6 +26,8 @@
   button.main { background:var(--signal); color:var(--bg); border:0; padding:10px 18px; font:600 16px/1 inherit; cursor:pointer; }
   button.main:disabled { opacity:.45; cursor:default; }
   input[type=file] { color:var(--muted); }
+  .pick { display:flex; gap:12px; align-items:center; margin:6px 0; flex-wrap:wrap; }
+  .pick span { font:600 14px/1 "IBM Plex Mono",Consolas,monospace; min-width:110px; color:var(--text); }
   .status { margin-top:10px; font-weight:600; }
   .good { color:var(--signal); } .bad { color:var(--bad); }
   .bar { height:8px; background:color-mix(in srgb,var(--text) 15%,transparent); margin-top:12px; }
@@ -48,7 +50,8 @@
     <h2 data-t="step1"></h2>
     <div class="box">
       <p data-t="step1Text" style="margin-top:0"></p>
-      <input type="file" id="folder" multiple accept=".xex,.sdb">
+      <div class="pick"><span>default.xex</span><input type="file" id="xexInput" accept=".xex"></div>
+      <div class="pick"><span>xeshader.sdb</span><input type="file" id="sdbInput" accept=".sdb"></div>
       <div class="status" id="status"></div>
     </div>
   </section>
@@ -63,6 +66,6 @@
   <section><h2 data-t="step3"></h2><ol id="steps"></ol></section>
   <footer data-t-html="footer"></footer>
 </main>
-<script type="module" src="app.js"></script>
+<script type="module" src="app.js?v=3"></script>
 </body>
 </html>

@@ -5,13 +5,13 @@ const T = {
     kicker: 'NINTENDO SWITCH · INSTALLER', subtitle: 'naruto-nx: the shaders made from your own copy of the game',
     whatTitle: 'What this page does',
     what: 'It reads your extracted disc of Naruto: Rise of a Ninja (Xbox 360), translates the game\'s shaders for the Switch and compiles them for its GPU, so the game does not stutter compiling them, and gives you a zip with the program and those shaders. Everything happens in your browser: your game files are not uploaded anywhere.',
-    step1: '1. Choose two files of your disc', step1Text: 'From your extracted disc (extract-xiso -x Naruto.iso), select both default.xex and xeshader.sdb (hold Ctrl to pick two). Only these two are read, in your browser; nothing is uploaded.',
+    step1: '1. Choose two files of your disc', step1Text: 'From your extracted disc (extract-xiso -x Naruto.iso), choose default.xex and xeshader.sdb, one file each. Only these two are read, in your browser; nothing is uploaded.',
     step2: '2. Make the package', create: 'Create naruto-nx.zip',
     step3: '3. Put it on the SD card',
     steps: ['Extract the zip to the root of your SD card: you get <code>switch/naruto-nx/</code>.',
       'Copy <strong>every file of your disc</strong> into <code>switch/naruto-nx/game/</code> (so that <code>switch/naruto-nx/game/default.xex</code> exists).',
       'Start the Homebrew Menu by holding <strong>R</strong> while starting any game (title override: full memory), then <strong>Naruto: Rise of a Ninja</strong>.'],
-    checking: 'Checking…', noXex: 'default.xex is not among the chosen files.', noSdb: 'xeshader.sdb is not among the chosen files: choose both.',
+    checking: 'Checking…', noXex: 'Choose default.xex.', noSdb: 'Now choose xeshader.sdb.',
     unsupported: 'This default.xex is not the version the port was made for (SHA-256 {hash}).',
     supported: 'Your disc is supported: version {version}.',
     loading: 'Loading the translators…', translating: 'Translating {count} shaders (a few minutes)…',
@@ -23,13 +23,13 @@ const T = {
     kicker: 'NINTENDO SWITCH · УСТАНОВЩИК', subtitle: 'naruto-nx: шейдеры из вашей собственной копии игры',
     whatTitle: 'Что делает эта страница',
     what: 'Она читает ваш распакованный диск Naruto: Rise of a Ninja (Xbox 360), переводит шейдеры игры для Switch и сразу компилирует их под её GPU, чтобы игра не статтерила на компиляции, и отдаёт zip с программой и этими шейдерами. Всё происходит в вашем браузере: файлы игры никуда не загружаются.',
-    step1: '1. Выберите два файла диска', step1Text: 'Из распакованного диска (extract-xiso -x Naruto.iso) выберите сразу default.xex и xeshader.sdb (удерживайте Ctrl, чтобы выбрать два). Читаются только эти два файла и только в вашем браузере; ничего не загружается.',
+    step1: '1. Выберите два файла диска', step1Text: 'Из распакованного диска (extract-xiso -x Naruto.iso) выберите default.xex и xeshader.sdb, каждый своей кнопкой. Читаются только эти два файла и только в вашем браузере; ничего не загружается.',
     step2: '2. Соберите пакет', create: 'Создать naruto-nx.zip',
     step3: '3. Скопируйте на SD-карту',
     steps: ['Распакуйте zip в корень SD-карты: появится <code>switch/naruto-nx/</code>.',
       'Скопируйте <strong>все файлы диска</strong> в <code>switch/naruto-nx/game/</code> (чтобы был путь <code>switch/naruto-nx/game/default.xex</code>).',
       'Запустите Homebrew Menu, удерживая <strong>R</strong> при запуске любой игры (title override: полная память), и выберите <strong>Naruto: Rise of a Ninja</strong>.'],
-    checking: 'Проверка…', noXex: 'Среди выбранных файлов нет default.xex.', noSdb: 'Среди выбранных файлов нет xeshader.sdb: выберите оба.',
+    checking: 'Проверка…', noXex: 'Выберите default.xex.', noSdb: 'Теперь выберите xeshader.sdb.',
     unsupported: 'Этот default.xex — не та версия, под которую сделан порт (SHA-256 {hash}).',
     supported: 'Ваш диск поддерживается: версия {version}.',
     loading: 'Загрузка переводчиков…', translating: 'Перевод {count} шейдеров (несколько минут)…',
@@ -41,7 +41,7 @@ const T = {
 let lang = (localStorage.getItem('naruto-nx.lang') || (navigator.language || 'en')).startsWith('ru') ? 'ru' : 'en';
 const t = (key, args = {}) => (T[lang][key] || key).replace(/\{(\w+)\}/g, (_, k) => args[k] ?? '');
 const $ = (id) => document.getElementById(id);
-const manifest = fetch('./release/manifest.json').then((r) => r.json());
+const manifest = fetch('./release/manifest.json', { cache: 'no-cache' }).then((r) => r.json());
 let chosen = null;  // { xex, sdb, build }
 let statusKey = null;
 
@@ -71,15 +71,14 @@ for (const b of document.querySelectorAll('.langs button')) {
   b.onclick = () => { lang = b.dataset.lang; try { localStorage.setItem('naruto-nx.lang', lang); } catch {} render(); };
 }
 
-$('folder').onchange = async () => {
+async function onPick() {
   chosen = null;
   $('create').disabled = true;
+  const xexFile = $('xexInput').files[0];
+  const sdbFile = $('sdbInput').files[0];
+  if (!xexFile) return setStatus('noXex', {}, '');
+  if (!sdbFile) return setStatus('noSdb', {}, '');
   setStatus('checking');
-  const files = [...$('folder').files];
-  const xexFile = files.find((f) => f.name.toLowerCase() === 'default.xex');
-  if (!xexFile) return setStatus('noXex', {}, 'bad');
-  const sdbFile = files.find((f) => f.name.toLowerCase() === 'xeshader.sdb');
-  if (!sdbFile) return setStatus('noSdb', {}, 'bad');
   const xex = new Uint8Array(await xexFile.arrayBuffer());
   const hash = await sha256(xex);
   const build = (await manifest).builds.find((b) => b.xex_sha256 === hash);
@@ -87,13 +86,15 @@ $('folder').onchange = async () => {
   chosen = { xex, sdb: new Uint8Array(await sdbFile.arrayBuffer()), build };
   setStatus('supported', { version: build.version }, 'good');
   $('create').disabled = false;
-};
+}
+$('xexInput').onchange = onPick;
+$('sdbInput').onchange = onPick;
 
 $('create').onclick = () => {
   if (!chosen) return;
   $('create').disabled = true;
   $('log').textContent = '';
-  const worker = new Worker('./naruto_worker.js', { type: 'module' });
+  const worker = new Worker('./naruto_worker.js?v=3', { type: 'module' });
   worker.onmessage = ({ data }) => {
     if (data.type === 'log') log(data.key, data.args);
     else if (data.type === 'progress') $('bar').style.width = `${Math.round(data.fraction * 100)}%`;
