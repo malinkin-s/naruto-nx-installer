@@ -3,11 +3,11 @@
 The installer page of [naruto-nx](https://github.com/malinkin-s/naruto-rise-of-a-ninja-nx), the Nintendo Switch port
 of Naruto: Rise of a Ninja: **https://malinkin-s.github.io/naruto-nx-installer/**
 
-You give it your own extracted Xbox 360 disc (the folder with `default.xex` and `xeshader.sdb`), and it gives you a
+You give it two files of your own extracted Xbox 360 disc (`default.xex` and `xeshader.sdb`), and it gives you a
 zip to extract to the root of the SD card. Everything runs in your browser: the game files never leave your computer.
 Then copy your disc's files into `switch/naruto-nx/game/`.
 
-Установщик порта: выберите папку распакованного диска (с `default.xex` и `xeshader.sdb`), страница сделает zip для
+Установщик порта: выберите два файла распакованного диска (`default.xex` и `xeshader.sdb`), страница сделает zip для
 SD-карты. Всё происходит в браузере, файлы игры никуда не загружаются.
 
 ## What it does

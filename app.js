@@ -5,13 +5,13 @@ const T = {
     kicker: 'NINTENDO SWITCH · INSTALLER', subtitle: 'naruto-nx: the shaders made from your own copy of the game',
     whatTitle: 'What this page does',
     what: 'It reads your extracted disc of Naruto: Rise of a Ninja (Xbox 360), translates the game\'s shaders for the Switch and compiles them for its GPU, so the game does not stutter compiling them, and gives you a zip with the program and those shaders. Everything happens in your browser: your game files are not uploaded anywhere.',
-    step1: '1. Choose your game folder', step1Text: 'The folder of your extracted disc: the one with default.xex and xeshader.sdb in it (extract-xiso -x Naruto.iso).',
+    step1: '1. Choose two files of your disc', step1Text: 'From your extracted disc (extract-xiso -x Naruto.iso), select both default.xex and xeshader.sdb (hold Ctrl to pick two). Only these two are read, in your browser; nothing is uploaded.',
     step2: '2. Make the package', create: 'Create naruto-nx.zip',
     step3: '3. Put it on the SD card',
     steps: ['Extract the zip to the root of your SD card: you get <code>switch/naruto-nx/</code>.',
       'Copy <strong>every file of your disc</strong> into <code>switch/naruto-nx/game/</code> (so that <code>switch/naruto-nx/game/default.xex</code> exists).',
       'Start the Homebrew Menu by holding <strong>R</strong> while starting any game (title override: full memory), then <strong>Naruto: Rise of a Ninja</strong>.'],
-    checking: 'Checking…', noXex: 'No default.xex in that folder.', noSdb: 'No xeshader.sdb next to default.xex: is this the whole disc?',
+    checking: 'Checking…', noXex: 'default.xex is not among the chosen files.', noSdb: 'xeshader.sdb is not among the chosen files: choose both.',
     unsupported: 'This default.xex is not the version the port was made for (SHA-256 {hash}).',
     supported: 'Your disc is supported: version {version}.',
     loading: 'Loading the translators…', translating: 'Translating {count} shaders (a few minutes)…',
@@ -23,13 +23,13 @@ const T = {
     kicker: 'NINTENDO SWITCH · УСТАНОВЩИК', subtitle: 'naruto-nx: шейдеры из вашей собственной копии игры',
     whatTitle: 'Что делает эта страница',
     what: 'Она читает ваш распакованный диск Naruto: Rise of a Ninja (Xbox 360), переводит шейдеры игры для Switch и сразу компилирует их под её GPU, чтобы игра не статтерила на компиляции, и отдаёт zip с программой и этими шейдерами. Всё происходит в вашем браузере: файлы игры никуда не загружаются.',
-    step1: '1. Выберите папку с игрой', step1Text: 'Папку распакованного диска: ту, где лежат default.xex и xeshader.sdb (extract-xiso -x Naruto.iso).',
+    step1: '1. Выберите два файла диска', step1Text: 'Из распакованного диска (extract-xiso -x Naruto.iso) выберите сразу default.xex и xeshader.sdb (удерживайте Ctrl, чтобы выбрать два). Читаются только эти два файла и только в вашем браузере; ничего не загружается.',
     step2: '2. Соберите пакет', create: 'Создать naruto-nx.zip',
     step3: '3. Скопируйте на SD-карту',
     steps: ['Распакуйте zip в корень SD-карты: появится <code>switch/naruto-nx/</code>.',
       'Скопируйте <strong>все файлы диска</strong> в <code>switch/naruto-nx/game/</code> (чтобы был путь <code>switch/naruto-nx/game/default.xex</code>).',
       'Запустите Homebrew Menu, удерживая <strong>R</strong> при запуске любой игры (title override: полная память), и выберите <strong>Naruto: Rise of a Ninja</strong>.'],
-    checking: 'Проверка…', noXex: 'В этой папке нет default.xex.', noSdb: 'Рядом с default.xex нет xeshader.sdb: это весь диск?',
+    checking: 'Проверка…', noXex: 'Среди выбранных файлов нет default.xex.', noSdb: 'Среди выбранных файлов нет xeshader.sdb: выберите оба.',
     unsupported: 'Этот default.xex — не та версия, под которую сделан порт (SHA-256 {hash}).',
     supported: 'Ваш диск поддерживается: версия {version}.',
     loading: 'Загрузка переводчиков…', translating: 'Перевод {count} шейдеров (несколько минут)…',
@@ -76,11 +76,9 @@ $('folder').onchange = async () => {
   $('create').disabled = true;
   setStatus('checking');
   const files = [...$('folder').files];
-  const depth = (f) => (f.webkitRelativePath || f.name).split('/').length;
-  const xexFile = files.filter((f) => f.name.toLowerCase() === 'default.xex').sort((a, b) => depth(a) - depth(b))[0];
+  const xexFile = files.find((f) => f.name.toLowerCase() === 'default.xex');
   if (!xexFile) return setStatus('noXex', {}, 'bad');
-  const dir = (xexFile.webkitRelativePath || '').slice(0, -xexFile.name.length);
-  const sdbFile = files.find((f) => (f.webkitRelativePath || '').toLowerCase() === (dir + 'xeshader.sdb').toLowerCase());
+  const sdbFile = files.find((f) => f.name.toLowerCase() === 'xeshader.sdb');
   if (!sdbFile) return setStatus('noSdb', {}, 'bad');
   const xex = new Uint8Array(await xexFile.arrayBuffer());
   const hash = await sha256(xex);
