@@ -1,10 +1,10 @@
 {
  "builds": [
   {
-   "version": "0.1.4",
+   "version": "0.1.5",
    "nro": "naruto.nro",
-   "nro_sha256": "8f0e9942f8ba465c7d8d23d4524a80ab1180da5140e63b98ffed83058ba8a112",
-   "nro_size": 39786070,
+   "nro_sha256": "2ca02d2d23317a0b31a4685dcac2bebb8abf67e687ef3d1c549c31e9c2f5cc30",
+   "nro_size": 39949910,
    "xex_sha256": "f8fd8a979fb5451460f820303a6ca4c75e01fd943aed600983cb68fc491af7bd",
    "deko3d": {
     "passes": "alpha,tess,bonerow,vszero,vsout,pszero,pred,predmul,sext,bool01,sel,alphamask,earlyhoist,ifmerge,dowhile,selsame,deadcomp,guardsel,lightbranch,nullps,txq,earlyz,gpr32,bonesel,aw4",
